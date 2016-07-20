@@ -16,6 +16,7 @@ public class ConfigApp {
   private static final String STOCK_LIST = "demo.stock.list";
   private static final String STAGE_DIR = "demo.stock.stage.dir";
   private static final String FILE_WATCHER_PERIODIC = "demo.stock.run.periodic";
+  private static final String PRINT_WAY = "demo.stock.simple.enable";
 
   public static Configuration getAppConfig(String propFile) {
     try {
@@ -47,6 +48,10 @@ public class ConfigApp {
 
   public static int getPeriodic() {
     return Integer.parseInt(getConfigurationParameterValue(appConf, FILE_WATCHER_PERIODIC));
+  }
+
+  public static Boolean getPrintWay() {
+    return Boolean.valueOf(getConfigurationParameterValue(appConf, PRINT_WAY));
   }
 
 }

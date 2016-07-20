@@ -4,12 +4,11 @@
 ##1.Overview
 This is where we demo projects using DF. There are following projects in pipeline
 
-* DF ingests data => Kafka => Druid database => Pivot reporting
-* DF ingests data => MongoDB => Zeppelin
-* DF ingests data => Kafka => MongoDB => Zeppelin
+* DF ingests data => Kafka => ElasticSearch => Zeppelin | Kibana | Grafna
+* DF ingests data => PostgreSQL => Zeppelin
 * DF ingests data => Kafka => Flink|Spark => Zeppelin
-* DF ingests data => Kafka => Flink|Spark => MongoDB => Zeppelin
-* DF ingests data => Hive => Flink|Spark => Zeppelin
-* DF ingests data => Hive => Zeppelin
+* DF ingests data => Kafka => Flink|Spark => ElasticSearch => Zeppelin
+* DF ingests data => Hive | HBase => Flink|Spark => Zeppelin
+* DF ingests data => Hive | HBase => Zeppelin
 * DF ingests data => D3
 

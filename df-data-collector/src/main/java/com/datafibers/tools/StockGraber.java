@@ -57,6 +57,7 @@ public class StockGraber extends AbstractVerticle {
                 String fileName = new SimpleDateFormat("'stock_'yyyyMMddhhmmss'.json.ignore'").format(new Date());
                 String postFileName = fileName.replaceAll(".ignore",""); //This is used at post processing
                 String jsonStr;
+                Boolean printFull = ConfigApp.getPrintWay();
 
                 Path stagFile = Paths.get(FILE_PATH, fileName);
                 Path postStageFile = Paths.get(FILE_PATH, postFileName);
@@ -66,7 +67,9 @@ public class StockGraber extends AbstractVerticle {
                 Map<String, Stock> stocks = YahooFinance.get(symbols); // single request
                 for(String symbol : stocks.keySet()) {
                     Stock stock = stocks.get(symbol);
-                    jsonStr = mapper.writeValueAsString(stock) + System.getProperty("line.separator");
+                    if(printFull) {
+                        jsonStr = mapper.writeValueAsString(stock) + System.getProperty("line.separator");
+                    } else jsonStr = getMinJsonInfo(stock, false) + System.getProperty("line.separator");
                     Files.write(stagFile, jsonStr.getBytes(), StandardOpenOption.APPEND);
                 }
 
@@ -78,6 +81,32 @@ public class StockGraber extends AbstractVerticle {
             }
 
         });
+
+    }
+
+    public String getMinJsonInfo(Stock stock, Boolean refresh) {
+
+        try {
+
+            String jsonStr = "{\"time\":\"" + new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date()) +
+                             "\",\"symbol\":\"" + stock.getSymbol() +
+                             "\",\"name\":\"" + stock.getName() +
+                             "\",\"exchange\":\""  + stock.getStockExchange() +
+                             "\",\"open_price\":" + stock.getQuote(refresh).getOpen() +
+                             ",\"ask_price\":" + stock.getQuote(refresh).getAsk() +
+                             ",\"ask_size\":" + stock.getQuote(refresh).getAskSize() +
+                             ",\"bid_price\":" + stock.getQuote(refresh).getBid() +
+                             ",\"bid_size\":" + stock.getQuote(refresh).getBidSize() +
+                             ",\"price\":" +  stock.getQuote(refresh).getPrice() +
+                             "}";
+            return jsonStr;
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
+        return null;
+
 
     }
 

@@ -2,3 +2,4 @@
 demo.stock.list=GOOG;BABA;NTDOY;YHOO;AAPL;HDP;DATA
 demo.stock.stage.dir=/home/vagrant/cust_data
 demo.stock.run.periodic=10000
+demo.stock.simple.enable=false
