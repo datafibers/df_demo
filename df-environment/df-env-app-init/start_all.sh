@@ -23,7 +23,7 @@ hive --service metastore 1>> /mnt/logs/metastore.log 2>> /mnt/logs/metastore.log
 
 # Start ElasticSearch
 echo "Starting ElasticSearch"
-/opt/elasticsearch/bin/elasticsearch&
+/opt/elasticsearch/bin/elasticsearch &
 
 # Start Zeppelin
 /opt/zeppelin/bin/zeppelin-daemon.sh start
