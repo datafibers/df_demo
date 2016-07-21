@@ -117,11 +117,11 @@ wget -qO- https://deb.nodesource.com/setup_4.x | sudo bash -
 sudo apt-get install -y nodejs
 
 # Copy .profile and change owner to vagrant
-cp /vagrant/.profile /home/vagrant/
-chown vagrant:vagrant /home/vagrant/.profile
+#cp /vagrant/.profile /home/vagrant/
+#chown vagrant:vagrant /home/vagrant/.profile
 
-cp -r /vagrant/etc /mnt/
-chown -R vagrant:vagrant /mnt/etc
+#cp -r /vagrant/etc /mnt/
+#chown -R vagrant:vagrant /mnt/etc
 mkdir -p /mnt/logs
 chown -R vagrant:vagrant /mnt/logs
 
@@ -131,4 +131,9 @@ mkdir -p /mnt/dfs/data
 chown -R vagrant:vagrant /mnt/dfs
 chown -R vagrant:vagrant /mnt/dfs/name
 chown -R vagrant:vagrant /mnt/dfs/data
+
+wget --progress=bar:force https://github.com/datafibers/df_demo/archive/master.zip
+unzip df_demo-master.zip
+cp ~/df_demo-master/df-environment/df-env-app-init/* ~
+
 
