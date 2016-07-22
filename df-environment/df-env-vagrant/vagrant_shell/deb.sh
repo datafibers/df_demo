@@ -117,8 +117,8 @@ wget -qO- https://deb.nodesource.com/setup_4.x | sudo bash -
 sudo apt-get install -y nodejs
 
 # Copy .profile and change owner to vagrant
-#cp /vagrant/.profile /home/vagrant/
-#chown vagrant:vagrant /home/vagrant/.profile
+cp /vagrant/.profile /home/vagrant/
+chown vagrant:vagrant /home/vagrant/.profile
 
 #cp -r /vagrant/etc /mnt/
 #chown -R vagrant:vagrant /mnt/etc
