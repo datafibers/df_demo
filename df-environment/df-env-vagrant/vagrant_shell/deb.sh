@@ -120,8 +120,8 @@ sudo apt-get install -y nodejs
 cp /vagrant/.profile /home/vagrant/
 chown vagrant:vagrant /home/vagrant/.profile
 
-#cp -r /vagrant/etc /mnt/
-#chown -R vagrant:vagrant /mnt/etc
+cp -r /vagrant/etc /mnt/
+chown -R vagrant:vagrant /mnt/etc
 mkdir -p /mnt/logs
 chown -R vagrant:vagrant /mnt/logs
 
@@ -133,7 +133,8 @@ chown -R vagrant:vagrant /mnt/dfs/name
 chown -R vagrant:vagrant /mnt/dfs/data
 
 wget --progress=bar:force https://github.com/datafibers/df_demo/archive/master.zip
-unzip df_demo-master.zip
+unzip master.zip
 cp ~/df_demo-master/df-environment/df-env-app-init/* ~
+chmod +x *.sh
 
 
