@@ -134,7 +134,7 @@ chown -R vagrant:vagrant /mnt/dfs/data
 
 wget --progress=bar:force https://github.com/datafibers/df_demo/archive/master.zip
 unzip master.zip
-cp ~/df_demo-master/df-environment/df-env-app-init/* ~
+cp /home/vagrant/df_demo-master/df-environment/df-env-app-init/* /home/vagrant/
 chmod +x *.sh
 
 
