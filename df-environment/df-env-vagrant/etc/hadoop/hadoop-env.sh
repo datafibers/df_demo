@@ -22,8 +22,8 @@
 # remote nodes.
 
 # The java implementation to use.
-JAVA_HOME=/usr/lib/jvm/java-7-oracle
-export JAVA_HOME=${JAVA_HOME}
+#JAVA_HOME=/usr/lib/jvm/java-7-oracle
+#export JAVA_HOME=${JAVA_HOME}
 
 # The jsvc implementation to use. Jsvc is required to run secure datanodes
 # that bind to privileged ports to provide authentication of data transfer

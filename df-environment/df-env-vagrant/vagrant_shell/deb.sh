@@ -67,6 +67,25 @@ fi
 ln -s /opt/apache-hive-1.2.1-bin /opt/hive
 popd
 
+# Install MySQL Metastore for Hive
+sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password mypassword'
+sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password mypassword'
+sudo apt-get -y install mysql-server
+sudo apt-get -y install libmysql-java
+
+# Configure Hive Metastore
+mysql -u root --password="mypassword" -f \
+-e "DROP DATABASE IF EXISTS metastore;"
+
+mysql -u root --password="mypassword" -f \
+-e "CREATE DATABASE IF NOT EXISTS metastore;"
+
+mysql -u root --password="mypassword" \
+-e "CREATE USER 'hive'@'localhost' IDENTIFIED BY 'mypassword'; REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'hive'@'localhost'; GRANT ALL PRIVILEGES ON metastore.* TO 'hive'@'localhost'; FLUSH PRIVILEGES;"
+
+schematool -dbType mysql -initSchema
+
+
 # Install CP
 pushd /opt/
 if [ ! -e confluent ]; then
