@@ -30,41 +30,29 @@ fi
 chmod a+rwx /mnt
 
 # Install and configure Apache Hadoop
-if [ -h /opt/hadoop ]; then
-    # reset symlink
-    rm -f /opt/hadoop
-fi
-
 pushd /opt/
 if [ ! -e hadoop ]; then
     pushd /tmp/vagrant-downloads
     if [ ! -e hadoop-2.6.0.tar.gz ]; then
         wget --progress=bar:force http://mirrors.koehn.com/apache/hadoop/common/hadoop-2.6.0/hadoop-2.6.0.tar.gz
     fi
-    popd
-
     tar xvzf /tmp/vagrant-downloads/hadoop-2.6.0.tar.gz
+    ln -sfn /opt/hadoop-2.6.0 /opt/hadoop
+    popd
 fi
-ln -s /opt/hadoop-2.6.0 /opt/hadoop
 popd
 
 # Install and configure Hive
-if [ -h /opt/hive ]; then
-    # reset symlink
-    rm -f /opt/hive
-fi
-
 pushd /opt/
-if [ ! -e apache-hive-1.2.1-bin ]; then
+if [ ! -e hive ]; then
     pushd /tmp/vagrant-downloads
     if [ ! -e apache-hive-1.2.1-bin.tar.gz ]; then
         wget --progress=bar:force http://apache.parentingamerica.com/hive/hive-1.2.1/apache-hive-1.2.1-bin.tar.gz
     fi
-    popd
-
     tar xvzf /tmp/vagrant-downloads/apache-hive-1.2.1-bin.tar.gz
+    ln -sfn /opt/apache-hive-1.2.1-bin /opt/hive
+    popd
 fi
-ln -s /opt/apache-hive-1.2.1-bin /opt/hive
 popd
 
 # Install CP
@@ -74,11 +62,10 @@ if [ ! -e confluent ]; then
     if [ ! -e confluent-2.0.0-2.11.7.tar.gz ]; then
         wget --progress=bar:force http://packages.confluent.io/archive/3.0/confluent-3.0.0-2.11.tar.gz
     fi
-    popd
-
     tar xvzf /tmp/vagrant-downloads/confluent-3.0.0-2.11.tar.gz
+    ln -sfn /opt/confluent-3.0.0 /opt/confluent
+    popd
 fi
-ln -s /opt/confluent-3.0.0 /opt/confluent
 popd
 
 # Install Elastic
@@ -88,37 +75,34 @@ if [ ! -e elasticsearch ]; then
     if [ ! -e elasticsearch-2.3.4.tar.gz ]; then
         wget --progress=bar:force https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/2.3.4/elasticsearch-2.3.4.tar.gz
     fi
-    popd
-
     tar xvzf /tmp/vagrant-downloads/elasticsearch-2.3.4.tar.gz
+    ln -sfn /opt/elasticsearch-2.3.4 /opt/elasticsearch
+    popd
 fi
-ln -s /opt/elasticsearch-2.3.4 /opt/elasticsearch
 popd
 
 # Install Zeppelin
 pushd /opt/
 if [ ! -e zeppelin ]; then
     pushd /tmp/vagrant-downloads
-    if [ ! -e zeppelin-0.6.0-SNAPSHOT-bin-all.tgz ]; then
-        wget  --progress=bar:force http://home.apache.org/~moon/zeppelin/snapshots/zeppelin-0.6.0-SNAPSHOT-bin-all.tgz
+    if [ ! -e zeppelin-0.6.0-bin-all.tgz ]; then
+        wget  --progress=bar:force http://mirror.its.dal.ca/apache/zeppelin/zeppelin-0.6.0/zeppelin-0.6.0-bin-all.tgz
     fi
+    tar xvzf /tmp/vagrant-downloads/zeppelin-0.6.0-bin-all.tgz
+    ln -sfn /opt/zeppelin-0.6.0-bin-all /opt/zeppelin
     popd
-
-    tar xvzf /tmp/vagrant-downloads/zeppelin-0.6.0-SNAPSHOT-bin-all.tgz
 fi
-ln -s /opt/zeppelin-0.6.0 /opt/zeppelin
 popd
 
 
 #Install Others
 sudo cp /opt/hadoop/share/hadoop/tools/lib/hadoop-distcp-2.6.0.jar /opt/hive/lib/
 sudo apt-get install -y maven git
-wget -qO- https://deb.nodesource.com/setup_4.x | sudo bash -
-sudo apt-get install -y nodejs
 
 # Copy .profile and change owner to vagrant
 cp /vagrant/.profile /home/vagrant/
 chown vagrant:vagrant /home/vagrant/.profile
+source /home/vagrant/.profile
 
 cp -r /vagrant/etc /mnt/
 chown -R vagrant:vagrant /mnt/etc
@@ -138,6 +122,9 @@ sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again p
 sudo apt-get -y install mysql-server
 sudo apt-get -y install libmysql-java
 
+sudo ln -sfn /usr/share/java/mysql-connector-java.jar /opt/hive/lib/mysql-connector-java.jar
+sudo ln -sfn /usr/share/java/mysql-connector-java.jar /opt/confluent/share/java/kafka-connect-jdbc/mysql-connector-java.jar
+
 # Configure Hive Metastore
 mysql -u root --password="mypassword" -f \
 -e "DROP DATABASE IF EXISTS metastore;"
@@ -146,10 +133,13 @@ mysql -u root --password="mypassword" -f \
 -e "CREATE DATABASE IF NOT EXISTS metastore;"
 
 mysql -u root --password="mypassword" \
--e "CREATE USER 'hive'@'localhost' IDENTIFIED BY 'mypassword'; REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'hive'@'localhost'; GRANT ALL PRIVILEGES ON metastore.* TO 'hive'@'localhost'; FLUSH PRIVILEGES;"
+-e "GRANT ALL PRIVILEGES ON metastore.* TO 'hive'@'localhost' IDENTIFIED BY 'mypassword'; FLUSH PRIVILEGES;"
 
 schematool -dbType mysql -initSchema
 
+# Get lastest init scripts
+rm -f master.zip
+rm -rf df_demo-master
 wget --progress=bar:force https://github.com/datafibers/df_demo/archive/master.zip
 unzip master.zip
 cp df_demo-master/df-environment/df-env-app-init/* /home/vagrant/
