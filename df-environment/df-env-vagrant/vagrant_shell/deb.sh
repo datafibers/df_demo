@@ -8,12 +8,12 @@ fi
 chmod a+rw /tmp/vagrant-downloads
 
 
-# Install Java 8. Uncommen if without proxy
+# Install Java 8 if Java is not installed or Java is before Java 1.8 . Uncommen below if your network has no proxy/firewall
 # sudo add-apt-repository -y ppa:webupd8team/java
 # sudo apt-get -y update
 # sudo apt-get -y install oracle-java8-installer
 
-if [ -z `which javac` ]; then
+if [ -z `which javac` -o "$(java -version 2>&1 | sed 's/.*version "\(.*\)\.\(.*\)\..*"/\1\2/; 1q')" -lt 18 ]; then 
     sudo echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | tee /etc/apt/sources.list.d/webupd8team-java.list
 	sudo echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | tee -a /etc/apt/sources.list.d/webupd8team-java.list
 	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886
