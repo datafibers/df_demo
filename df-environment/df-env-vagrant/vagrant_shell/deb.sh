@@ -59,7 +59,7 @@ popd
 pushd /opt/
 if [ ! -e confluent ]; then
     pushd /tmp/vagrant-downloads
-    if [ ! -e confluent-2.0.0-2.11.7.tar.gz ]; then
+    if [ ! -e confluent-3.0.0-2.11.tar.gz ]; then
         wget --progress=bar:force http://packages.confluent.io/archive/3.0/confluent-3.0.0-2.11.tar.gz
     fi
     tar xvzf /tmp/vagrant-downloads/confluent-3.0.0-2.11.tar.gz
