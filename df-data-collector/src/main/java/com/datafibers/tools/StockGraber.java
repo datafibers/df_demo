@@ -88,7 +88,7 @@ public class StockGraber extends AbstractVerticle {
 
         try {
 
-            String jsonStr = "{\"time\":\"" + new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date()) +
+            String jsonStr = "{\"time\":\"" + new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'").format(new Date()) +
                              "\",\"symbol\":\"" + stock.getSymbol() +
                              "\",\"name\":\"" + stock.getName() +
                              "\",\"exchange\":\""  + stock.getStockExchange() +
