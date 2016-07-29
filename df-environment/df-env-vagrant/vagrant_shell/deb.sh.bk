@@ -2,30 +2,6 @@
 
 set -e
 
-# sample call install_flag soft_install version_install dl_link, such as
-# soft_install $install_hadoop hadoop $version_hadoop $version_hadoop $dl_link_hadoop
-
-function soft_install
-{
-    install_flag=$1
-    soft_install=$2
-    version_install=$3
-    dl_link=$4
-    install_folder=/opt/$soft_install-
-
-    if [ "$install_flag" = true ]; then
-        if [ ! -e hadoop ]; then
-            pushd /tmp/vagrant-downloads
-            if [ ! -e hadoop-2.6.0.tar.gz ]; then
-                wget --progress=bar:force http://mirrors.koehn.com/apache/hadoop/common/hadoop-2.6.0/hadoop-2.6.0.tar.gz
-            fi
-            tar xvzf /tmp/vagrant-downloads/hadoop-2.6.0.tar.gz
-            ln -sfn /opt/hadoop-2.6.0 /opt/hadoop
-            popd
-        fi
-    fi
-}
-
 if [ ! -d /tmp/vagrant-downloads ]; then
     mkdir -p /tmp/vagrant-downloads
 fi
