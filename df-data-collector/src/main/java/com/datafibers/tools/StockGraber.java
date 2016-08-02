@@ -7,10 +7,14 @@ import yahoofinance.YahooFinance;
 import java.io.IOException;
 import java.nio.file.*;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.file.FileSystem;
+import yahoofinance.histquotes.HistoricalQuote;
+import yahoofinance.histquotes.Interval;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -42,6 +46,7 @@ public class StockGraber extends AbstractVerticle {
 
         //HttpClient httpClient = vertx.createHttpClient(new HttpClientOptions());
         FileSystem fs = vertx.fileSystem();
+        getJsonFileHist(ConfigApp.getStockList());
         getJsonFile(ConfigApp.getStockList());
 
     }
@@ -84,6 +89,45 @@ public class StockGraber extends AbstractVerticle {
 
     }
 
+    public void getJsonFileHist(String[] symbols) {
+
+        mapper = new org.codehaus.jackson.map.ObjectMapper();
+
+        try {
+            //create a new file end with .ignore
+            String fileName = new SimpleDateFormat("'history_stock_'yyyyMMddhhmmss'.json.ignore'").format(new Date());
+            String postFileName = fileName.replaceAll(".ignore",""); //This is used at post processing
+            String jsonStr;
+            Boolean printFull = ConfigApp.getPrintWay();
+
+            Calendar from = Calendar.getInstance();
+            Calendar to = Calendar.getInstance();
+            from.add(Calendar.MONTH, -6); // from 6 months ago
+
+            Path stagFile = Paths.get(FILE_PATH, fileName);
+            Path postStageFile = Paths.get(FILE_PATH, postFileName);
+
+            if(!Files.exists(stagFile)) Files.createFile(stagFile);
+
+            Map<String, Stock> stocks = YahooFinance.get(symbols); // single request
+
+            for(String symbol : stocks.keySet()) {
+                Stock stock = stocks.get(symbol);
+                List<HistoricalQuote> histQuotes = stock.getHistory(from, to, Interval.DAILY);
+                for (HistoricalQuote aQuote : histQuotes) {
+                    jsonStr = getMinJsonInfo(aQuote) + System.getProperty("line.separator");
+                    Files.write(stagFile, jsonStr.getBytes(), StandardOpenOption.APPEND);
+                }
+            }
+            //Rename by removing .ignore so that DF can process it
+            Files.move(stagFile, postStageFile, REPLACE_EXISTING);
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
+    }
+
     public String getMinJsonInfo(Stock stock, Boolean refresh) {
 
         try {
@@ -107,6 +151,29 @@ public class StockGraber extends AbstractVerticle {
 
         return null;
 
+
+    }
+
+    /**
+     * This is manily for history data printout
+     * @param stockHist
+     * @return
+     */
+    public String getMinJsonInfo(HistoricalQuote stockHist) {
+
+        String jsonStr = "{\"time\":\"" + new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'").format(stockHist.getDate().getTime()) +
+                "\",\"symbol\":\"" + stockHist.getSymbol() +
+                "\",\"name\":\"" + stockHist.getSymbol() +
+                "\",\"exchange\":\""  + "NULL" +
+                "\",\"open_price\":" + stockHist.getOpen() +
+                ",\"ask_price\":" + stockHist.getAdjClose() +
+                ",\"ask_size\":" + stockHist.getVolume() +
+                ",\"bid_price\":" +stockHist.getHigh() +
+                ",\"bid_size\":" + stockHist.getVolume() +
+                ",\"price\":" +  stockHist.getClose() +
+                "}";
+
+        return jsonStr;
 
     }
 
