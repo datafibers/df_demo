@@ -6,11 +6,10 @@ import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
 import java.io.IOException;
 import java.nio.file.*;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.file.FileSystem;
 import yahoofinance.histquotes.HistoricalQuote;
@@ -131,8 +130,9 @@ public class StockGraber extends AbstractVerticle {
     public String getMinJsonInfo(Stock stock, Boolean refresh) {
 
         try {
-
-            String jsonStr = "{\"time\":\"" + new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'").format(new Date()) +
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            df.setTimeZone(TimeZone.getTimeZone("America/New_York"));
+            String jsonStr = "{\"time\":\"" + df.format(new Date()) +
                              "\",\"symbol\":\"" + stock.getSymbol() +
                              "\",\"name\":\"" + stock.getName() +
                              "\",\"exchange\":\""  + stock.getStockExchange() +
@@ -161,7 +161,9 @@ public class StockGraber extends AbstractVerticle {
      */
     public String getMinJsonInfo(HistoricalQuote stockHist) {
 
-        String jsonStr = "{\"time\":\"" + new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'").format(stockHist.getDate().getTime()) +
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        df.setTimeZone(TimeZone.getTimeZone("America/New_York"));
+        String jsonStr = "{\"time\":\"" + df.format(stockHist.getDate().getTime()) +
                 "\",\"symbol\":\"" + stockHist.getSymbol() +
                 "\",\"name\":\"" + stockHist.getSymbol() +
                 "\",\"exchange\":\""  + "NULL" +
