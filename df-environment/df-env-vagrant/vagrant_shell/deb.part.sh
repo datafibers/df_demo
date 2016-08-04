@@ -80,7 +80,7 @@ if [ -z `which javac` -o "$(java -version 2>&1 | sed 's/.*version "\(.*\)\.\(.*\
 fi
 
 # Install and configure Apache Hadoop
-echo "install - hdp"
+
 soft_install $install_hadoop hadoop $dl_link_hadoop
 
 # Install and configure Hive
@@ -97,9 +97,12 @@ soft_install $install_zeppelin zeppelin $dl_link_zeppelin
 
 # Install Grafana
 if [ "$install_grafana" = true ]; then 
-    wget --progress=bar:force $dl_link_grafana
-    sudo apt-get install -y adduser libfontconfig
-    grafana_file_name=$(basename $dl_link)
+    echo "Install - Grafana Reporting"
+    grafana_file_name=$(basename $dl_link_grafana)
+    if [ ! -e $grafana_file_name ]; then
+        wget --progress=bar:force $dl_link_grafana
+    fi
+    sudo apt-get install -y adduser libfontconfig   
     sudo dpkg -i $grafana_file_name
 fi
 

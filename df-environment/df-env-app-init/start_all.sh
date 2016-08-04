@@ -28,7 +28,7 @@ fi
 # Start ElasticSearch
 if [ -h /opt/elasticsearch ]; then
     echo "Starting ElasticSearch"
-    /opt/elasticsearch/bin/elasticsearch &
+    /opt/elasticsearch/bin/elasticsearch 1>> /mnt/logs/elastic.log 2>> /mnt/logs/elastic.log &
 fi
 
 # Start Zeppelin
