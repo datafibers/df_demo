@@ -18,6 +18,5 @@ The [installvm.sh](https://github.com/datafibers/df_demo/blob/master/df-environm
 * In Windows, run it through [Git for Windows](https://git-for-windows.github.io/)'s GitBash
 
 ##3. Demo Setup
-java -jar df-data-collector-<RELEASE_VRESION>-SNAPSHOT-jar-with-dependencies.jar _FULL_PATH_DIR_WHERE_STORE_DATA_FILES_
-
+Run [run_demo.sh](https://github.com/datafibers/df_demo/blob/master/df-environment/df-env-app-init/run_demo.sh) to start all deamons for demo.
 
