@@ -26,9 +26,9 @@ if [ -h /opt/hive ]; then
 fi
 
 # Start ElasticSearch
-if [ -h /opt/elasticsearch ]; then
+if [ -h /opt/elastic ]; then
     echo "Starting ElasticSearch"
-    /opt/elasticsearch/bin/elasticsearch 1>> /mnt/logs/elastic.log 2>> /mnt/logs/elastic.log &
+    /opt/elastic/bin/elasticsearch 1>> /mnt/logs/elastic.log 2>> /mnt/logs/elastic.log &
 fi
 
 # Start Zeppelin
