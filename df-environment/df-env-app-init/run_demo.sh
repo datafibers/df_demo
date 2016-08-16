@@ -15,6 +15,9 @@ DF_REACTIVE_SERVER_DL=https://github.com/datafibers/df/releases/download/v$RELEA
 DF_REACTIVE_AGENT=df-reactive-agent-$RELEASE_VERSION-SNAPSHOT-jar-with-dependencies.jar
 DF_REACTIVE_AGENT_DL=https://github.com/datafibers/df/releases/download/v$RELEASE_VERSION/$DF_REACTIVE_AGENT
 
+DF_KAFKA_ELASTIC_SINK=kafka-connect-elasticsearch-1.0.0-SNAPSHOT-jar-with-dependencies.jar
+DF_KAFKA_ELASTIC_SINK_DL=https://github.com/datafibers/df/releases/download/v0.0.1/kafka-connect-elasticsearch-1.0.0-SNAPSHOT-jar-with-dependencies.jar
+
 if [ ! -e $DF_DATA_COLLECTOR ]; then
 	echo "Download relased Jar packages $DF_DATA_COLLECTOR"
 	wget $DF_DATA_COLLECTOR_DL
@@ -28,6 +31,11 @@ fi
 if [ ! -e $DF_REACTIVE_AGENT ]; then
 	echo "Download relased Jar packages $DF_REACTIVE_AGENT"
 	wget $DF_REACTIVE_AGENT_DL
+fi
+
+if [ ! -e $DF_KAFKA_ELASTIC_SINK ]; then
+	echo "Download relased Jar packages $DF_REACTIVE_AGENT"
+	wget $DF_KAFKA_ELASTIC_SINK_DL
 fi
 
 ./clean_up.sh
@@ -56,7 +64,7 @@ java -jar df-data-collector-0.0.1-SNAPSHOT-jar-with-dependencies.jar /home/vagra
 sleep 5
 
 echo "Setup Elastic Index Mapping"
-curl -XDELETE localhost:9200/kafka_finance
+# curl -XDELETE localhost:9200/kafka_finance
 curl -XPOST localhost:9200/kafka_finance -d '{
 "settings" : {
 "number_of_shards" : 1},
